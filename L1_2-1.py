@@ -118,11 +118,116 @@ display_requantized_images(img, bpp_values)
 ##    bits per pixel. What combination gives the best balance between
 ##    compression and visual quality?
 
+def resample_and_requantize(image, factor, bpp):
+    resampled = resample_image(image, factor)
+    return requantize_image(resampled, bpp)
+
+def display_processed_images(image, combinations):
+    n = len(combinations) + 1
+    fig, axes = plt.subplots(1, n, figsize=(5*n, 5))
+
+    axes[0].imshow(image, cmap='gray')
+    axes[0].set_title('Original')
+
+    for i, (factor, bpp) in enumerate(combinations, 1):
+        processed = resample_and_requantize(image, factor, bpp)
+        axes[i].imshow(processed, cmap='gray')
+        axes[i].set_title(f'Factor {factor}, {bpp} bpp')
+
+        # Calculate compression ratio
+        original_size = image.shape[0] * image.shape[1] * 8  # 8 bpp original
+        compressed_size = (image.shape[0] // factor) * (image.shape[1] // factor) * bpp
+        compression_ratio = original_size / compressed_size
+        axes[i].set_xlabel(f'Compression: {compression_ratio:.1f}x')
+
+    plt.tight_layout()
+    plt.show()
+
+# Experiment with different combinations
+combinations = [
+    (2, 6), (2, 4), (4, 6), (4, 4), (8, 6), (8, 4)
+]
+display_processed_images(img, combinations)
+
+# Observations:
+# - Factor 2 with 6 bpp provides good balance between quality and compression
+# - Factor 4 with 6 bpp offers higher compression with acceptable quality
+# - Factor 8 introduces significant pixelation, even at 6 bpp
+# - 4 bpp shows noticeable banding in all cases
+# - The best balance depends on the specific use case and quality requirements
+# - For general purpose, factor 2 or 4 with 6 bpp seems to offer a good
+#   compromise
+
+
 
 ## 5. Modify the code to implement a more advanced resampling method, such
 ##  as bicubic interpolation. Compare the results with the simple
 ##  resampling method used initially. Discuss the trade-offs between
 ##  image quality and computational complexity.
+
+from scipy import ndimage
+
+def resample_bicubic(image, factor):
+    new_shape = (image.shape[0] // factor, image.shape[1] // factor)
+    return ndimage.zoom(image, 1/factor, order=3)
+
+def compare_resampling_methods(image, factor):
+    simple_resampled = resample_image(image, factor)
+    bicubic_resampled = resample_bicubic(image, factor)
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+    axes[0].imshow(image, cmap='gray')
+    axes[0].set_title('Original')
+
+    axes[1].imshow(simple_resampled, cmap='gray')
+    axes[1].set_title(f'Simple (factor {factor})')
+
+    axes[2].imshow(bicubic_resampled, cmap='gray')
+    axes[2].set_title(f'Bicubic (factor {factor})')
+
+    plt.tight_layout()
+    plt.show()
+
+# Compare simple and bicubic resampling
+compare_resampling_methods(img, 4)
+
+# Measure execution time
+import time
+
+def measure_time(func, *args):
+    start = time.time()
+    result = func(*args)
+    end = time.time()
+    return result, end - start
+
+simple_result, simple_time = measure_time(resample_image, img, 4)
+bicubic_result, bicubic_time = measure_time(resample_bicubic, img, 4)
+
+print(f"Simple resampling time: {simple_time:.4f} seconds")
+print(f"Bicubic resampling time: {bicubic_time:.4f} seconds")
+
+# Observations:
+# 1. Image Quality:
+#    - Bicubic interpolation produces smoother results with less pixelation
+#    - Simple resampling creates a more blocky appearance
+#    - Bicubic preserves more detail and edge information
+#
+# 2. Computational Complexity:
+#    - Simple resampling is significantly faster
+#    - Bicubic interpolation requires more computational resources
+#
+# 3. Trade-offs:
+#    - Simple resampling is preferred for speed and low computational
+#      resources
+#    - Bicubic is better for higher quality output, especially for larger
+#      factors
+#    - The choice depends on the specific application requirements (speed vs.
+#      quality)
+#
+# 4. Use cases:
+#    - Simple: Real-time applications, preview generation
+#    - Bicubic: Final image processing, high-quality downscaling
 
 
 ## 6. Try using different images by changing the image_url . You can find
