@@ -34,3 +34,33 @@ plt.subplot(132), plt.imshow(img_resampled, cmap='gray'), plt.title(f'Resampled 
 plt.subplot(133), plt.imshow(img_requantized, cmap='gray'), plt.title(f'Requantized ({bpp} bpp)') # type: ignore
 plt.savefig('processed_image.png')
 plt.show()
+
+## 1. How does the resampling factor affect the image quality? At what factor
+##    does the distortion become apparent?
+
+
+## 2. What is the characteristic of the distortion introduced by resampling?
+##    How does it differ from the distortion introduced by requantization?
+
+
+## 3. How few bits per pixel can be used in requantization before the image
+##    distortion becomes apparent?
+
+
+## 4. Implement a function that applies both resampling and requantization
+##    to the image. Experiment with different combinations of factors and
+##    bits per pixel. What combination gives the best balance between
+##    compression and visual quality?
+
+
+## 5. Modify the code to implement a more advanced resampling method, such
+##  as bicubic interpolation. Compare the results with the simple
+##  resampling method used initially. Discuss the trade-offs between
+##  image quality and computational complexity.
+
+
+## 6. Try using different images by changing the image_url . You can find
+##  a variety of test images at the USC-SIPI Image Database
+## (http://sipi.usc.edu/database/). How do the effects of resampling and
+##  requantization vary for different types of images (e.g., portraits,
+##  textures, aerial photos)?
