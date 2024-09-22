@@ -38,13 +38,79 @@ plt.show()
 ## 1. How does the resampling factor affect the image quality? At what factor
 ##    does the distortion become apparent?
 
+# Function to display multiple resampled images
+def display_resampled_images(image, factors):
+    n = len(factors) + 1
+    fig, axes = plt.subplots(1, n, figsize=(5*n, 5))
+
+    axes[0].imshow(image, cmap='gray')
+    axes[0].set_title('Original')
+
+    for i, factor in enumerate(factors, 1):
+        resampled = resample_image(image, factor)
+        axes[i].imshow(resampled, cmap='gray')
+        axes[i].set_title(f'Factor {factor}')
+
+    plt.tight_layout()
+    plt.show()
+
+# Display resampled images with different factors
+factors = [2, 4, 8, 16]
+display_resampled_images(img, factors)
+
+# Observations:
+# 1. As the resampling factor increases, image quality decreases.
+# 2. Distortion becomes noticeable at factor 4, with loss of fine details.
+# 3. At factor 8 and above, the image is significantly pixelated and degraded.
+# 4. The exact point of noticeable distortion may vary depending on image
+#  content and viewer perception.
+
 
 ## 2. What is the characteristic of the distortion introduced by resampling?
 ##    How does it differ from the distortion introduced by requantization?
 
+# Resampling distortion:
+# - Introduces pixelation and loss of fine details
+# - Maintains overall contrast and brightness
+# Requantization distortion:
+# - Causes banding or posterization
+# - Reduces number of gray levels, creating abrupt tonal transitions
+# Key differences:
+# - Resampling affects spatial resolution; requantization affects tonal
+#   resolution
+# - Resampling creates a blocky appearance; requantization creates a banded
+#   look
+# - Resampling loses detail; requantization simplifies tonal gradients
+
 
 ## 3. How few bits per pixel can be used in requantization before the image
 ##    distortion becomes apparent?
+
+def display_requantized_images(image, bpp_values):
+    n = len(bpp_values) + 1
+    fig, axes = plt.subplots(1, n, figsize=(5*n, 5))
+
+    axes[0].imshow(image, cmap='gray')
+    axes[0].set_title('Original (8 bpp)')
+
+    for i, bpp in enumerate(bpp_values, 1):
+        requantized = requantize_image(image, bpp)
+        axes[i].imshow(requantized, cmap='gray')
+        axes[i].set_title(f'{bpp} bpp')
+
+    plt.tight_layout()
+    plt.show()
+
+# Display requantized images with different bpp
+bpp_values = [7, 6, 5, 4, 3, 2, 1]
+display_requantized_images(img, bpp_values)
+
+# Observations:
+# - Distortion becomes noticeable at 5-6 bpp
+# - At 4 bpp, banding effects are clearly visible
+# - 3 bpp and below show severe degradation
+# - The exact point of noticeable distortion may vary depending on image
+#   content and viewer perception
 
 
 ## 4. Implement a function that applies both resampling and requantization
