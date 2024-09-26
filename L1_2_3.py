@@ -28,3 +28,21 @@ plt.figure(figsize=(10, 5))
 plt.subplot(121), plt.imshow(img, cmap='gray'), plt.title('Original')
 plt.subplot(122), plt.imshow(noisy_img_display, cmap='gray'), plt.title(f'Noisy (std dev = {std_dev_display})')
 plt.show()
+
+
+## 1. At what PSNR value does the noise start to become visibly apparent in
+##    the image?
+
+## 2. How does this PSNR threshold compare to the often-cited 30-50 dB range
+##    for acceptable image quality?
+
+## 3. At what noise level (standard deviation) does the image become
+##    unrecognizable? What is the corresponding PSNR?
+
+## 4. Implement a simple noise reduction technique, such as a median filter
+##    or Gaussian blur. Apply this to the noisy images and compare the PSNR
+##    values before and after noise reduction. Discuss the effectiveness and
+##    limitations of this simple denoising approach.
+
+## 5. Research and briefly describe an advanced noise reduction technique.
+##    How does it improve upon simpler methods?
