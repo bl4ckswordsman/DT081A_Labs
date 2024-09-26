@@ -235,3 +235,41 @@ print(f"Bicubic resampling time: {bicubic_time:.4f} seconds")
 ## (http://sipi.usc.edu/database/). How do the effects of resampling and
 ##  requantization vary for different types of images (e.g., portraits,
 ##  textures, aerial photos)?
+
+# The quantized images generally seem to have a better balance between compression and visual quality.
+#  Whereas the resampled images are more pixelated and lose more detail.
+# - Image with a person: Visble pixelation in the resampled image.
+# - Grass texture: The requantized image looks more natural and less pixelated.
+# - Aerial photo: The requantized image has unnoticeable quality loss without zooming in.
+#   The resampled image is more pixelated.
+# - Peppers: Heavy pixelation in the resampled image, while the requantized image looks better.
+
+# List of local file paths
+image_paths = [
+    "images/male_portrait.tiff",
+    "images/grass_texture.tiff",
+    "images/sandiego_aerial.tiff",
+    "images/peppers.tiff"
+]
+
+def load_local_image(path):
+    return np.array(Image.open(path).convert('L'))
+
+def process_and_display(path, factor, bpp):
+    img = load_local_image(path)
+    resampled = resample_image(img, factor)
+    requantized = requantize_image(img, bpp)
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    axes[0].imshow(img, cmap='gray')
+    axes[0].set_title('Original')
+    axes[1].imshow(resampled, cmap='gray')
+    axes[1].set_title(f'Resampled (factor {factor})')
+    axes[2].imshow(requantized, cmap='gray')
+    axes[2].set_title(f'Requantized ({bpp} bpp)')
+    plt.tight_layout()
+    plt.show()
+
+# Process each image
+for path in image_paths:
+    process_and_display(path, factor=4, bpp=4)
