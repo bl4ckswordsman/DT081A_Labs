@@ -1,3 +1,4 @@
+#LAB 1 - 2.2
 import numpy as np
 import matplotlib.pyplot as plt
 from L1_2_1 import img, img_resampled, img_requantized, load_image, resample_image, requantize_image, image_url

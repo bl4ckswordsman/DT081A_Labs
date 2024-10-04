@@ -1,3 +1,4 @@
+#LAB 1 - 2.3
 import numpy as np
 import matplotlib.pyplot as plt
 from L1_2_1 import img
